@@ -5,6 +5,7 @@ import "dotenv/config";
 
 // import waterRouter from './routes/api/water-router.js';
 // import userRouter from './routes/api/user-router.js'
+import authRouter from './routes/api/auth-router.js'
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
+app.use('/api/auth', authRouter);
 // app.use('/api/water', waterRouter);
 // app.use('/api/users', userRouter);
 
