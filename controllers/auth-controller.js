@@ -4,8 +4,6 @@ import { controlWrapper } from "../decorators/index.js";
 import User from "../models/User.js";
 import { HttpError } from "../helpers/HttpError.js";
 import path from "path";
-// import { nanoid } from "nanoid";
-// import sendEmail from "../helpers/sendEmail.js";
 
 const { JWT_SECRET, BASE_URL } = process.env;
 const avatarPath = path.resolve("public", "avatars");
@@ -17,14 +15,7 @@ const signup = async (req, res, next) => {
       return next(new HttpError(409, "Such e-mail already exist"));
    }
    const hashPasswd = await bcrypt.hash(password, 10);
-   // const verificationToken = nanoid();
    const newUser = await User.create({ ...req.body, password: hashPasswd });
-   // const verificationEmail = {
-   //    to: email,
-   //    subject: "Verification email",
-   //    html: `<p></p><a href="${BASE_URL}/api/users/verify/${verificationToken}" target="_blank">Click to verify your email</a><p></p>`,
-   // };
-   // await sendEmail(verificationEmail);
    res.status(201).json({ username: newUser.username, email: newUser.email });
 };
 
@@ -33,9 +24,6 @@ const signin = async (req, res, next) => {
    const user = await User.findOne({ email });
    if (!user) {
       return next(new HttpError(401, "E-mail or password invalid"));
-   }
-   if (!user.verify) {
-      return next(new HttpError(401, "E-mail is not verified"));
    }
    const isPasswdOK = await bcrypt.compare(password, user.password);
    if (!isPasswdOK) {

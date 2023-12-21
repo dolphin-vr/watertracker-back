@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 const {DB_HOST_TEST, PORT=3000, JWT_SECRET} = process.env;
 
-describe("test /api/users/register route", ()=>{
+describe("test /api/auth/signup route", ()=>{
    let server = null;
    beforeAll(async ()=>{
       await mongoose.connect(DB_HOST_TEST);
@@ -24,13 +24,13 @@ describe("test /api/users/register route", ()=>{
       await User.deleteMany();
    })
 
-   test("test /api/users/register with corectData", async ()=>{
+   test("test /api/auth/signup with corectData", async ()=>{
       const signupData = {
          username: "Testuser",
          email: "testuser@mail.ua",
-         password: "1234567"
+         password: "12345678"
       }
-      const {body, statusCode} = await request(app).post("/api/users/register").send(signupData);
+      const {body, statusCode} = await request(app).post("/api/auth/signup").send(signupData);
       expect(statusCode).toBe(201);
       expect(body.username).toBe(signupData.username);
       expect(body.email).toBe(signupData.email);
@@ -39,23 +39,23 @@ describe("test /api/users/register route", ()=>{
       expect(user.username).toBe(signupData.username);
    })
 
-   test("test /api/users/register without email", async ()=>{
+   test("test /api/auth/signup without email", async ()=>{
       const signupData = {
          username: "Testuser",
-         password: "1234567"
+         password: "12345678"
       }
-      const {body, statusCode} = await request(app).post("/api/users/register").send(signupData);
+      const {body, statusCode} = await request(app).post("/api/auth/signup").send(signupData);
          expect(statusCode).toBe(400);
          expect(body.message).toBe("missing required field 'email'");
    })
    
-   test("test /api/users/register with invalid email", async ()=>{
+   test("test /api/users/signup with invalid email", async ()=>{
       const signupData = {
          username: "Testuser",
          email: "Testuser",
-         password: "1234567"
+         password: "12345678"
       }
-      const {body, statusCode} = await request(app).post("/api/users/register").send(signupData);
+      const {body, statusCode} = await request(app).post("/api/auth/signup").send(signupData);
          expect(statusCode).toBe(400);
          expect(body.message).toBe("'email' must be valid e-mail");
    })
@@ -63,17 +63,17 @@ describe("test /api/users/register route", ()=>{
 
 
 
-describe("test /api/users/login route", ()=>{
+describe("test /api/auth/signin route", ()=>{
    let server = null;
    beforeAll(async ()=>{
       const signupData = {
          username: "Testuser",
          email: "testuser@mail.ua",
-         password: "1234567"
+         password: "12345678"
       }
       await mongoose.connect(DB_HOST_TEST);
       server = app.listen(PORT);
-      const {body, statusCode} = await request(app).post("/api/users/register").send(signupData);
+      const {body, statusCode} = await request(app).post("/api/auth/signup").send(signupData);
    }, 10000)
 
    afterAll(async ()=>{
@@ -86,38 +86,39 @@ describe("test /api/users/login route", ()=>{
 
    afterEach(async ()=>{})
 
-   test("test /api/users/login with corectData", async ()=>{
+   test("test /api/auth/signin with corectData", async ()=>{
       const signinData = {
          email: "testuser@mail.ua",
-         password: "1234567"
+         password: "12345678"
       }
-      const {body, statusCode} = await request(app).post("/api/users/login").send(signinData);
+      const {body, statusCode} = await request(app).post("/api/auth/signin").send(signinData);
       const {token} = body;
+      console.log('token= ', token)
       const {id}=jwt.verify(token, JWT_SECRET);
       const user = await User.findById(id);
       expect(statusCode).toBe(200);
       expect(body.user.email).toBe(signinData.email);
-      expect(body.user.subscription).toBe("starter");
+      expect(body.user.waterNorma).toBe(0);
       expect(body.user.email).toBe(user.email);
 
    })
 
-   test("test /api/users/login without email", async ()=>{
+   test("test /api/auth/signin without email", async ()=>{
       const signinData = {
          username: "Testuser",
-         password: "1234567"
+         password: "12345678"
       }
-      const {body, statusCode} = await request(app).post("/api/users/login").send(signinData);
+      const {body, statusCode} = await request(app).post("/api/auth/signin").send(signinData);
          expect(statusCode).toBe(400);
          expect(body.message).toBe("missing required field 'email'");
    })
    
-   test("test /api/users/login with invalid email", async ()=>{
+   test("test /api/auth/signin with invalid email", async ()=>{
       const signinData = {
          email: "Testuser",
-         password: "1234567"
+         password: "12345678"
       }
-      const {body, statusCode} = await request(app).post("/api/users/login").send(signinData);
+      const {body, statusCode} = await request(app).post("/api/auth/signin").send(signinData);
          expect(statusCode).toBe(400);
          expect(body.message).toBe("'email' must be valid e-mail");
    })
