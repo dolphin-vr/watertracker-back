@@ -26,13 +26,11 @@ describe("test /api/auth/signup route", ()=>{
 
    test("test /api/auth/signup with corectData", async ()=>{
       const signupData = {
-         username: "Testuser",
          email: "testuser@mail.ua",
          password: "12345678"
       }
       const {body, statusCode} = await request(app).post("/api/auth/signup").send(signupData);
       expect(statusCode).toBe(201);
-      expect(body.username).toBe(signupData.username);
       expect(body.email).toBe(signupData.email);
 
       const user = await User.findOne({email: signupData.email});
@@ -41,7 +39,6 @@ describe("test /api/auth/signup route", ()=>{
 
    test("test /api/auth/signup without email", async ()=>{
       const signupData = {
-         username: "Testuser",
          password: "12345678"
       }
       const {body, statusCode} = await request(app).post("/api/auth/signup").send(signupData);
@@ -51,7 +48,6 @@ describe("test /api/auth/signup route", ()=>{
    
    test("test /api/users/signup with invalid email", async ()=>{
       const signupData = {
-         username: "Testuser",
          email: "Testuser",
          password: "12345678"
       }
@@ -67,7 +63,6 @@ describe("test /api/auth/signin route", ()=>{
    let server = null;
    beforeAll(async ()=>{
       const signupData = {
-         username: "Testuser",
          email: "testuser@mail.ua",
          password: "12345678"
       }
@@ -105,7 +100,6 @@ describe("test /api/auth/signin route", ()=>{
 
    test("test /api/auth/signin without email", async ()=>{
       const signinData = {
-         username: "Testuser",
          password: "12345678"
       }
       const {body, statusCode} = await request(app).post("/api/auth/signin").send(signinData);

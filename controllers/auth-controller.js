@@ -9,14 +9,14 @@ const { JWT_SECRET, BASE_URL } = process.env;
 // const avatarPath = path.resolve("public", "avatars");
 
 const signup = async (req, res, next) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (user) {
-    return next(new HttpError(409, "Such e-mail already exist"));
-  }
-  const hashPasswd = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ ...req.body, password: hashPasswd });
-  res.status(201).json({ username: newUser.username, email: newUser.email });
+   const { email, password } = req.body;
+   const user = await User.findOne({ email });
+   if (user) {
+      return next(new HttpError(409, "Such e-mail already exist"));
+   }
+   const hashPasswd = await bcrypt.hash(password, 10);
+   const newUser = await User.create({ ...req.body, password: hashPasswd });
+   res.status(201).json({ email: newUser.email });
 };
 
 const signin = async (req, res, next) => {
