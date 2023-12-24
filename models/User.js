@@ -9,7 +9,6 @@ const userSchema = new Schema({
    username: {
       type: String,
       minLength: 3,
-      required: [true, 'Choose your username'],
    },   
   password: {
    type: String,
@@ -45,10 +44,6 @@ userSchema.post("findOneAndUpdate", handleSaveError);
 const User = model("user", userSchema);
 
 export const SignUpSchema = Joi.object({
-   username: Joi.string().required().min(3).messages({
-      "any.required": "missing required field 'username'",
-      "string.base": "'username' must be string",
-   }),
    email: Joi.string().required().pattern(emailRegexp).messages({
       "any.required": "missing required field 'email'",
       "string.pattern.base": "'email' must be valid e-mail",
