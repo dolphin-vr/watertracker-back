@@ -5,12 +5,12 @@ import { handleSaveError, preUpdate } from "./hooks.js";
 const waterSchema = new Schema(
    {
       date: {
-         type: Date,
-         required: [true, "Set date-time of record"],
+         type: String,
+         required: [true, "Set date of record"],
       },
-      tzOffset: {
-         type: Number,
-         default: 0,
+      time: {
+         type: String,
+         required: [true, "Set time of record"],
       },
       water: { type: Number, required: [true, "Set volume of water"], min: 10, max: 5000 },
       user: {
@@ -33,14 +33,17 @@ const Water = model("water", waterSchema, "water");
 export const waterAddSchema = Joi.object({
   //  date: Joi.date().iso().required().messages({
     date: Joi.string().required().messages({
-      "any.required": `missing required "date" field`,
-      "string.base": `"date" must be date`,
+      "any.required": "missing required 'date' field",
+      "string.base": "'date' must be date-string",
    }),
+   time: Joi.string().required().messages({
+    "any.required": "missing required 'time' field",
+    "string.base": "'time' must be time-string",
+  }),
    water: Joi.number().required().max(5000).messages({
-      "any.required": `missing required "water" field`,
-      "string.base": `"water" must be number`,
+    "any.required": "missing required 'water' field",
+    "string.base": "'water' must be number",
    }),
-   owner: Joi.object(),
 });
 
 export const waterUpdateSchema = Joi.object({

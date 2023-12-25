@@ -1,6 +1,6 @@
 import express from 'express';
 import waterController from "../../controllers/water-controller.js";
-import {authentication, isEmptyBody, isValidId} from '../../middlewares/index.js';
+import {authentication, isEmptyBody, isValidDate, isValidId} from '../../middlewares/index.js';
 import {bodyValidator} from '../../decorators/index.js';
 import { waterAddSchema, waterUpdateSchema } from '../../models/Water.js';
 
@@ -13,6 +13,8 @@ router.route('/')
    // .delete(waterController.deleteAll)
    .post(isEmptyBody, bodyValidator(waterAddSchema), waterController.addDoze);
 
+router.route('/today/:date')
+   .get(isValidDate, waterController.getDaily)
 // router.route('/:id')
 //    .get(isValidId, waterController.getById)
 //    .put(isValidId, isEmptyBody, bodyValidator(waterUpdateSchema), waterController.updateById)
@@ -23,5 +25,9 @@ router.route('/')
 
 // router.route('/all')
 //    .delete(waterController.deleteAll);
+
+
+router.route('/genmonth')
+.post(isEmptyBody, waterController.generateMonth);
 
 export default router;
