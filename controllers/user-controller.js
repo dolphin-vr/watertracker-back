@@ -1,9 +1,10 @@
-// import Jimp from "jimp";
+import Jimp from "jimp";
 import bcrypt from "bcryptjs";
 import { controlWrapper } from "../decorators/index.js";
 import User from "../models/User.js";
 import { cloudinary } from "../helpers/index.js";
 import fs from "fs/promises";
+import { HttpError } from "../helpers/HttpError.js";
 
 const getUserInfo = (req, res) => {
   const { username, email, gender, avatarURL } = req.user;
@@ -17,15 +18,26 @@ const getUserInfo = (req, res) => {
 
 const userAvatar = controlWrapper(async (req, res) => {
   const { _id } = req.user;
-  const { url: avatarURL } = await cloudinary.uploader.upload(req.file.path, {
+  const { path } = req.file;
+
+  await Jimp.read(path)
+    .then((img) => {
+      return img.resize(100, 100).quality(75).write(path);
+    })
+    .catch((error) => {
+      throw HttpError(404, error.message);
+    });
+
+  const { url: avatarURL } = await cloudinary.uploader.upload(path, {
     folder: "avatars",
   });
-  await fs.unlink(req.file.path);
+
+  await fs.unlink(path);
 
   const user = await User.findByIdAndUpdate(_id, { avatarURL });
 
-  res.status(201).json({
-    avatarURL,
+  res.status(200).json({
+    avatarURL: user.avatarURL,
     message: "Avatar added successfully",
   });
 });
@@ -40,7 +52,7 @@ const updateUserInfo = controlWrapper(async (req, res) => {
     const hashPasswd = await bcrypt.hash(newpassword, 10);
     user.password = hashPasswd;
   }
-  res.json({
+  res.status(200).json({
     email: user.email,
     username: user.username,
     gender: user.gender,
@@ -48,8 +60,18 @@ const updateUserInfo = controlWrapper(async (req, res) => {
   });
 });
 
+const updateWaterNorma = controlWrapper(async (req, res) => {
+  const { _id } = req.user;
+  const { waterNorma } = req.body;
+  const user = await User.findByIdAndUpdate(_id, { waterNorma });
+  res.status(200).json({
+    waterNorma: user.waterNorma,
+  });
+});
+
 export default {
   getUserInfo,
   userAvatar,
   updateUserInfo,
+  updateWaterNorma,
 };
