@@ -1,17 +1,40 @@
 import { controlWrapper } from '../decorators/index.js';
 import Water from '../models/Water.js';
 import { HttpError } from "../helpers/HttpError.js";
+// import { dateISO, timeISO } from '../helpers/dates.js';
 
 const getDaily = async (req, res)=>{
    const {_id: user} = req.user;
-   const today = req.body.date;
-   
+   const date = req.params.date;
+   const query = {user, date};
+   // console.log('query= ', query)
+   const result = await Water.find(query, "-date -user -createdAt -updatedAt");
+   // console.log(result);
+   res.status(201).json({date, dailyPortions: result});
 }
 
 const addDoze = async (req, res, next)=>{
-   const result = await Water.create({...req.body, tzOffset, user: req.user._id});
+   // const date = dateISO(req.body.date);
+   // const time = timeISO(req.body.date);
+   const result = await Water.create({...req.body, user: req.user._id});
    // var localNow = new Date(result.date.getTime() -  (result.tzOffset * 60000));
-   res.status(201).json({_id: result._id, water: result.water, date: result.date});
+   res.status(201).json({_id: result._id, date: result.date, time: result.time, water: result.water});
+}
+
+const generateMonth = async (req, res, next)=>{
+   const mm = req.body.month;
+   const firstDay = req.body.firstday;
+   const lastDay = req.body.lastday;
+   for (let day = firstDay; day <= lastDay; day++) {
+      const dozen = Math.round(Math.random() * 17 + 1);
+      const date = `2023-${mm.toString().padStart(2, 0)}-${day.toString().padStart(2, 0)}`;
+      for (let doze = 1; doze < dozen; doze++) {
+         const time = `${Math.round(Math.random() * 16 + 5)}:${Math.trunc(Math.random() * 12) * 5}`;
+         const water = Math.trunc(Math.random() * 10 + 1) * 50;
+         const result = await Water.create({date, time, water, user: req.user._id});
+      }
+   }
+   res.status(201).json("Successfuly created");
 }
 
 // const getAll = async (req, res) => {
@@ -30,7 +53,7 @@ export default {
    addDoze: controlWrapper(addDoze),
    // updateById: controlWrapper(updateById),
    // deleteById: controlWrapper(deleteById),
-   // updateFavoriteById: controlWrapper(updateFavoriteById),
+   generateMonth: controlWrapper(generateMonth),
    // deleteAll: controlWrapper(deleteAll),
 }
 

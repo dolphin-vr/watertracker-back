@@ -9,7 +9,7 @@ const { JWT_SECRET, BASE_URL } = process.env;
 // const avatarPath = path.resolve("public", "avatars");
 
 const makeToken = async (payload) => {
-   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "72h" });
+   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "720h" });
    await User.findByIdAndUpdate(payload.id, { token });
    return token
 }
