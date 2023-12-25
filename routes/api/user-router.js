@@ -6,7 +6,10 @@ import {
   uploader,
 } from "../../middlewares/index.js";
 import { bodyValidator } from "../../decorators/index.js";
-import { UpdateUserInfoSchema } from "../../models/User.js";
+import {
+  UpdateUserInfoSchema,
+  UpdateWaterNormaSchema,
+} from "../../models/User.js";
 
 const userRouter = express.Router();
 
@@ -25,6 +28,13 @@ userRouter.patch(
   isEmptyBody,
   bodyValidator(UpdateUserInfoSchema),
   userController.updateUserInfo
+);
+
+userRouter.patch(
+  "/waterrate",
+  isEmptyBody,
+  bodyValidator(UpdateWaterNormaSchema),
+  userController.updateWaterNorma
 );
 
 export default userRouter;
