@@ -9,29 +9,23 @@ const getDaily = async (req, res)=>{
 }
 
 const addDoze = async (req, res, next)=>{
-   console.log('body= ', req.body)
-   const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
-console.log('timeZone= ', timeZone);
-const tzOffset = (new Date()).getTimezoneOffset();
-console.log('timezoneOffset= ', tzOffset);
    const result = await Water.create({...req.body, tzOffset, user: req.user._id});
-   console.log('result date= ', result.date.toLocaleString({ timeZone }))
    // var localNow = new Date(result.date.getTime() -  (result.tzOffset * 60000));
-   res.status(201).json({_id: result._id, water: result.water, date: new Date(result.date.getTime() -  (result.tzOffset * 60000))});
+   res.status(201).json({_id: result._id, water: result.water, date: result.date});
 }
 
-const getAll = async (req, res) => {
-   const {_id: owner} = req.user;
-   const {page=1, limit=10, ...searchParam} = req.query;
-   const skip = (page-1)*limit;
-   const query = {owner, ...searchParam};
-   const result = await Contact.find(query, "-createdAt -updatedAt", {skip, limit}).populate("owner", "username email");
-   const total = await Contact.countDocuments(query);
-   res.json({result, total});
-}
+// const getAll = async (req, res) => {
+//    const {_id: owner} = req.user;
+//    const {page=1, limit=10, ...searchParam} = req.query;
+//    const skip = (page-1)*limit;
+//    const query = {owner, ...searchParam};
+//    const result = await Contact.find(query, "-createdAt -updatedAt", {skip, limit}).populate("owner", "username email");
+//    const total = await Contact.countDocuments(query);
+//    res.json({result, total});
+// }
 
 export default {
-   // getAll: controlWrapper(getAll),
+   getDaily: controlWrapper(getDaily),
    // getById: controlWrapper(getById),
    addDoze: controlWrapper(addDoze),
    // updateById: controlWrapper(updateById),
