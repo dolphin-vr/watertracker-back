@@ -32,6 +32,10 @@ const userSchema = new Schema(
          default: null,
       },
       waterNorma: { type: Number, min: 0, max: 15000, default: 0 },
+      date: {
+         type: String,
+         required: [true, "Set registration date"],
+      },
       verify: {
          type: String,
          default: "",
@@ -54,6 +58,10 @@ export const SignUpSchema = Joi.object({
    password: Joi.string().required().min(8).max(48).messages({
       "any.required": "missing required field 'password'",
       "string.base": "'password' must be string",
+   }),
+   date: Joi.date().iso().required().messages({
+      "any.required": `missing required "date" field`,
+      "string.base": `"date" must be date`,
    }),
 });
 

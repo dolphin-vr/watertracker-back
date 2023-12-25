@@ -88,7 +88,6 @@ describe("test /api/auth/signin route", ()=>{
       }
       const {body, statusCode} = await request(app).post("/api/auth/signin").send(signinData);
       const {token} = body;
-      console.log('token= ', token)
       const {id}=jwt.verify(token, JWT_SECRET);
       const user = await User.findById(id);
       expect(statusCode).toBe(200);

@@ -1,5 +1,4 @@
 // import Jimp from "jimp";
-// import gravatar from "gravatar.js";
 import bcrypt from "bcryptjs";
 import { controlWrapper } from "../decorators/index.js";
 import User from "../models/User.js";
@@ -45,7 +44,7 @@ const updateUserInfo = controlWrapper(async (req, res) => {
     email: user.email,
     username: user.username,
     gender: user.gender,
-    message: "User is update",
+    message: "User info is updated",
   });
 });
 
