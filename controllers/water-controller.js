@@ -3,6 +3,14 @@ import Water from '../models/Water.js';
 import { HttpError } from "../helpers/HttpError.js";
 // import { dateISO, timeISO } from '../helpers/dates.js';
 
+const addDoze = async (req, res, next)=>{
+   // const date = dateISO(req.body.date);
+   // const time = timeISO(req.body.date);
+   const result = await Water.create({...req.body, user: req.user._id});
+   // var localNow = new Date(result.date.getTime() -  (result.tzOffset * 60000));
+   res.status(201).json({_id: result._id, date: result.date, time: result.time, water: result.water});
+}
+
 const getDaily = async (req, res)=>{
    const {_id: user} = req.user;
    const date = req.params.date;
@@ -13,12 +21,14 @@ const getDaily = async (req, res)=>{
    res.status(201).json({date, dailyPortions: result});
 }
 
-const addDoze = async (req, res, next)=>{
-   // const date = dateISO(req.body.date);
-   // const time = timeISO(req.body.date);
-   const result = await Water.create({...req.body, user: req.user._id});
-   // var localNow = new Date(result.date.getTime() -  (result.tzOffset * 60000));
-   res.status(201).json({_id: result._id, date: result.date, time: result.time, water: result.water});
+const getMonth = async (req, res)=>{
+   const {_id: user} = req.user;
+   const month = req.params.month;
+   const query = {user, date};
+   // console.log('query= ', query)
+   const result = await Water.find(query, "-date -user -createdAt -updatedAt");
+   // console.log(result);
+   res.status(201).json({date, dailyPortions: result});
 }
 
 const generateMonth = async (req, res, next)=>{
