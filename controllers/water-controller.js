@@ -18,17 +18,22 @@ const getDaily = async (req, res)=>{
    // console.log('query= ', query)
    const result = await Water.find(query, "-date -user -createdAt -updatedAt");
    // console.log(result);
-   res.status(201).json({date, dailyPortions: result});
+   res.json({date, dailyPortions: result});
 }
 
 const getMonth = async (req, res)=>{
    const {_id: user} = req.user;
-   const month = req.params.month;
-   const query = {user, date};
+   const month = req.params.date.slice(0, 7);
+   const query = [
+      { $match: {user, date: {$regex : month}} },
+      { $group: { _id: "$date", daily: {$sum: "$water"}, doses: {$count: {}}} },
+      {  $sort: {_id: 1} }
+   ];
    // console.log('query= ', query)
-   const result = await Water.find(query, "-date -user -createdAt -updatedAt");
+   // const result = await Water.find(query, "-createdAt -updatedAt");
+   const result = await Water.aggregate(query);
    // console.log(result);
-   res.status(201).json({date, dailyPortions: result});
+   res.json({result});
 }
 
 const generateMonth = async (req, res, next)=>{
@@ -59,7 +64,7 @@ const generateMonth = async (req, res, next)=>{
 
 export default {
    getDaily: controlWrapper(getDaily),
-   // getById: controlWrapper(getById),
+   getMonth: controlWrapper(getMonth),
    addDoze: controlWrapper(addDoze),
    // updateById: controlWrapper(updateById),
    // deleteById: controlWrapper(deleteById),
@@ -118,3 +123,31 @@ export default {
 //    }
 //    res.json(result)
 // }
+
+// db.players.aggregate( [
+//    { $addFields:
+//       {
+//         isFound:
+//             { $function:
+//                {
+//                   body: function(name) {
+//                      return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"
+//                   },
+//                   args: [ "$name" ],
+//                   lang: "js"
+//                }
+//             },
+//          message:
+//             { $function:
+//                {
+//                   body: function(name, scores) {
+//                      let total = Array.sum(scores);
+//                      return `Hello ${name}.  Your total score is ${total}.`
+//                   },
+//                   args: [ "$name", "$scores"],
+//                   lang: "js"
+//                }
+//             }
+//        }
+//     }
+// ] )
