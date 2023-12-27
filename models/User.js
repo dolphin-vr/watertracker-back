@@ -93,7 +93,7 @@ export const UpdateUserInfoSchema = Joi.object({
   password: Joi.string().min(8).max(48).messages({
     "string.base": "'password' must be string",
   }),
-  newpassword: Joi.string().min(8).max(48).messages({
+  newPassword: Joi.string().min(8).max(48).messages({
     "string.base": "'password' must be string",
   }),
   gender: Joi.string().valid(...genderList),
