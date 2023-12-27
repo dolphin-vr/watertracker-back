@@ -12,6 +12,14 @@ const addDoze = async (req, res, next)=>{
    res.status(201).json({_id: result._id, date: result.date, time: result.time, water: result.water});
 }
 
+const editDoze = async (req, res, next)=>{
+   // const date = dateISO(req.body.date);
+   // const time = timeISO(req.body.date);
+   const result = await Water.create({...req.body, user: req.user._id});
+   // var localNow = new Date(result.date.getTime() -  (result.tzOffset * 60000));
+   res.status(201).json({_id: result._id, date: result.date, time: result.time, water: result.water});
+}
+
 const getDaily = async (req, res)=>{
    const {_id: user} = req.user;
    const date = req.params.date;
