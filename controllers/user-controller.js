@@ -7,12 +7,14 @@ import fs from "fs/promises";
 import { HttpError } from "../helpers/HttpError.js";
 
 const getUserInfo = (req, res) => {
-  const { username, email, gender, avatarURL } = req.user;
+  const { username, email, gender, avatarURL, waterNorma, date } = req.user;
   res.json({
     email,
     username,
     gender,
     avatarURL,
+    waterNorma,
+    date,
   });
 };
 
@@ -38,25 +40,25 @@ const userAvatar = controlWrapper(async (req, res) => {
 
   res.status(200).json({
     avatarURL: user.avatarURL,
-    message: "Avatar added successfully",
+    //  message: "Avatar added successfully",
   });
 });
 
 const updateUserInfo = controlWrapper(async (req, res) => {
   const { _id } = req.user;
-  const { newpassword } = req.body;
+  const { newPassword } = req.body;
   const user = await User.findByIdAndUpdate(_id, {
     ...req.body,
   });
-  if (newpassword) {
-    const hashPasswd = await bcrypt.hash(newpassword, 10);
+  if (newPassword) {
+    const hashPasswd = await bcrypt.hash(newPassword, 10);
     user.password = hashPasswd;
   }
   res.status(200).json({
     email: user.email,
     username: user.username,
     gender: user.gender,
-    message: "User info is updated",
+    //  message: "User info is updated",
   });
 });
 
