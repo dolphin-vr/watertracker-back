@@ -33,5 +33,7 @@ router.route('/month/:date')
 
 router.route('/genmonth')
 .post(isEmptyBody, waterController.generateMonth);
+router.route('/genperiod')
+.post(isEmptyBody, waterController.generatePeriod);
 
 export default router;

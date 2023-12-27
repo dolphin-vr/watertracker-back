@@ -1,6 +1,7 @@
 import { controlWrapper } from '../decorators/index.js';
 import Water from '../models/Water.js';
 import { HttpError } from "../helpers/HttpError.js";
+import User from '../models/User.js';
 // import { dateISO, timeISO } from '../helpers/dates.js';
 
 const addDoze = async (req, res, next)=>{
@@ -23,18 +24,21 @@ const getDaily = async (req, res)=>{
 
 const getMonth = async (req, res)=>{
    const {_id: user} = req.user;
+   const norma = req.user.waterNorma / 100 || 1;
    const month = req.params.date.slice(0, 7);
    const query = [
       { $match: {user, date: {$regex : month}} },
       { $group: { _id: "$date", daily: {$sum: "$water"}, doses: {$count: {}}} },
-      {  $sort: {_id: 1} }
+      { $replaceWith: { date: "$_id", percentage: { $round : { $divide: [ "$daily", norma]}}, doses: "$doses" } },
+      {  $sort: {date: 1} }
    ];
-   // console.log('query= ', query)
-   // const result = await Water.find(query, "-createdAt -updatedAt");
    const result = await Water.aggregate(query);
    // console.log(result);
-   res.json({result});
+   res.json({daily: result, waterNorma: req.user.waterNorma});
 }
+// { $group: { _id: "$date", daily: { $divide: [ {$sum: "$water"}, 100 ] }, doses: {$count: {}}} },
+   // console.log('query= ', query)
+   // const result = await Water.find(query, "-createdAt -updatedAt");
 
 const generateMonth = async (req, res, next)=>{
    const mm = req.body.month;
@@ -49,6 +53,37 @@ const generateMonth = async (req, res, next)=>{
          const result = await Water.create({date, time, water, user: req.user._id});
       }
    }
+   res.status(201).json("Successfuly created");
+}
+
+const generatePeriod = async (req, res, next)=>{
+   // console.log('firstdate== ', req.body.firstday);
+   const firstDay = new Date(req.body.firstday);
+   const lastDay = new Date(req.body.lastday);
+   // console.log('firstDay== ', firstDay);
+   // console.log('lastDay== ', lastDay);
+   const regdate = await User.findByIdAndUpdate(req.user._id, { date: req.body.firstday });
+   // let nextDay = firstDay;
+   // nextDay.setDate(nextDay.getDate() + 1);
+   for (let today = firstDay; today <= lastDay; today.setDate(today.getDate() + 1)) {
+      const date = today.toISOString().slice(0, 10);
+      const dozen = Math.round(Math.random() * 17 + 0);
+      for (let doze = 0; doze < dozen; doze++) {
+         const time = `${Math.round(Math.random() * 16 + 5)}:${Math.trunc(Math.random() * 12) * 5}`;
+         const water = Math.trunc(Math.random() * 10 + 1) * 50;
+         const result = await Water.create({date, time, water, user: req.user._id});
+      }
+   }
+   // for (let day = firstDay; day <= lastDay; day++) {
+   //    const dozen = Math.round(Math.random() * 17 + 0);
+   //    const date = `2023-${mm.toString().padStart(2, 0)}-${day.toString().padStart(2, 0)}`;
+   //    for (let doze = 1; doze < dozen; doze++) {
+   //       const time = `${Math.round(Math.random() * 16 + 5)}:${Math.trunc(Math.random() * 12) * 5}`;
+   //       const water = Math.trunc(Math.random() * 10 + 1) * 50;
+   //       const result = await Water.create({date, time, water, user: req.user._id});
+   //    }
+   // }
+   // console.log('firstDay== ', regdate);
    res.status(201).json("Successfuly created");
 }
 
@@ -69,7 +104,7 @@ export default {
    // updateById: controlWrapper(updateById),
    // deleteById: controlWrapper(deleteById),
    generateMonth: controlWrapper(generateMonth),
-   // deleteAll: controlWrapper(deleteAll),
+   generatePeriod: controlWrapper(generatePeriod),
 }
 
 
