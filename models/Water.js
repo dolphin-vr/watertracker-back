@@ -31,7 +31,6 @@ waterSchema.post("findOneAndUpdate", handleSaveError);
 const Water = model("water", waterSchema, "water");
 
 export const waterAddSchema = Joi.object({
-  //  date: Joi.date().iso().required().messages({
     date: Joi.string().required().messages({
       "any.required": "missing required 'date' field",
       "string.base": "'date' must be date-string",
@@ -48,15 +47,16 @@ export const waterAddSchema = Joi.object({
 
 export const waterUpdateSchema = Joi.object({
    date: Joi.string().messages({
-      "string.base": `"date" must be date`,
-   }),
-   water: Joi.string().messages({
-      "string.base": `"water" must be text`,
-   }),
-   phone: Joi.string().messages({
-      "string.base": `"phone" must be text`,
-   }),
-   favorite: Joi.boolean(),
+     "string.base": "'date' must be date-string",
+  }),
+  time: Joi.string().required().messages({
+   "any.required": "missing required 'time' field",
+   "string.base": "'time' must be time-string",
+ }),
+  water: Joi.number().required().max(5000).messages({
+   "any.required": "missing required 'water' field",
+   "string.base": "'water' must be number",
+  }),
 });
 
 export default Water;
