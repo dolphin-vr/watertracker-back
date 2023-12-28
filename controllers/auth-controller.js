@@ -16,18 +16,18 @@ const makeToken = async (payload) => {
 
 const signup = async (req, res, next) => {
    const { email, password } = req.body;
-   console.log('in dada== ', email, password)
+   // console.log('in dada== ', email, password)
    const user = await User.findOne({ email });
-   console.log('chk mail== ', user);
+   // console.log('chk mail== ', user);
    if (user) {
       return next(new HttpError(409, "Such e-mail already exist"));
    }
    // const regDate = req.body.date;
    const hashPasswd = await bcrypt.hash(password, 10);
    const newUser = await User.create({ ...req.body, password: hashPasswd });
-   // const token = await makeToken({id: newUser._id});
-   console.log('newUser== ', newUser)
-   res.status(201).json({ email: newUser.email, date: newUser.date });
+   const token = await makeToken({id: newUser._id});
+   // console.log('newUser== ', newUser)
+   res.status(201).json({ email: newUser.email, date: newUser.date, token: token });
    // { email: newUser.email, date: newUser.email, waterNorma: newUser.waterNorma, date: newUser.email, date: newUser.email, }
 };
 

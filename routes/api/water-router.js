@@ -12,6 +12,9 @@ router.route('/')
    // .get(waterController.getAll)
    // .delete(waterController.deleteAll)
    .post(isEmptyBody, bodyValidator(waterAddSchema), waterController.addDoze);
+   router.route('/:id')
+   .put(isValidId, isEmptyBody, bodyValidator(waterUpdateSchema), waterController.editDoze)
+   .delete(isValidId, waterController.deleteDoze);
 
 router.route('/today/:date')
    .get(isValidDate, waterController.getDaily);
@@ -21,7 +24,6 @@ router.route('/month/:date')
 .get(isValidMonth, waterController.getMonth);
 // router.route('/:id')
 //    .get(isValidId, waterController.getById)
-//    .put(isValidId, isEmptyBody, bodyValidator(waterUpdateSchema), waterController.updateById)
 //    .delete(isValidId, waterController.deleteById);
 
 // router.route('/:id/favorite')
