@@ -12,6 +12,12 @@ router.route('/')
    // .get(waterController.getAll)
    // .delete(waterController.deleteAll)
    .post(isEmptyBody, bodyValidator(waterAddSchema), waterController.addDoze);
+
+   router.route('/genperiod')
+   .post(isEmptyBody, waterController.generatePeriod);
+   router.route('/killthemall')
+   .delete(waterController.deleteAll);
+
    router.route('/:id')
    .put(isValidId, isEmptyBody, bodyValidator(waterUpdateSchema), waterController.editDoze)
    .delete(isValidId, waterController.deleteDoze);
@@ -33,9 +39,5 @@ router.route('/month/:date')
 //    .delete(waterController.deleteAll);
 
 
-router.route('/genmonth')
-.post(isEmptyBody, waterController.generateMonth);
-router.route('/genperiod')
-.post(isEmptyBody, waterController.generatePeriod);
 
 export default router;
