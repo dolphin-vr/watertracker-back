@@ -53,9 +53,9 @@ const getDaily = async (req, res)=>{
       { $replaceWith: { date: "$_id", percentage: { $round : { $divide: [ "$daily", norma]}}, doses: "$doses", dailyPortions: "$dailyPortions" } },
    ];
    const result = await Water.aggregate(query);
-   console.log(result)
+   // console.log(result)
    // res.json({date, dailyPortions: result});
-   res.json(result);
+   res.json(...result);
 }
 // db.books.aggregate([
 //    // First Stage
