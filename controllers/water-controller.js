@@ -2,7 +2,6 @@ import { controlWrapper } from '../decorators/index.js';
 import Water from '../models/Water.js';
 import { HttpError } from "../helpers/HttpError.js";
 import User from '../models/User.js';
-// import { dateISO, timeISO } from '../helpers/dates.js';
 
 const addDoze = async (req, res, next)=>{
    const result = await Water.create({...req.body, user: req.user._id});
@@ -12,9 +11,7 @@ const addDoze = async (req, res, next)=>{
 const editDoze = async (req, res, next)=>{
    const {_id: user} = req.user;
    const {id} = req.params;
-   // console.log(user, id)
    const result = await Water.findOneAndUpdate({_id: id, user}, req.body);
-   // console.log(result)
       if (!result){
          next(new HttpError(404, `Drink with id=${req.params.id} not found`));
       } else{
@@ -25,9 +22,7 @@ const editDoze = async (req, res, next)=>{
 const deleteDoze = async (req, res, next)=>{
    const {_id: user} = req.user;
    const {id} = req.params;
-   // console.log(user, id)
    const result = await Water.findByIdAndDelete({_id: id, user});
-   // console.log(result)
       if (!result){
          next(new HttpError(404, `Drink with id=${req.params.id} not found`));
       } else{
@@ -39,8 +34,6 @@ const getDaily = async (req, res)=>{
    const {_id: user} = req.user;
    const norma = req.user.waterNorma / 100 || 1;
    const date = req.params.date;
-   // const query = {user, date};
-   // const result = await Water.find(query, "-date -user -createdAt -updatedAt");
    const query = [
       { $match: {"date": date} },
       { $sort: {time: 1} },
@@ -53,16 +46,12 @@ const getDaily = async (req, res)=>{
       { $replaceWith: { date: "$_id", percentage: { $round : { $divide: [ "$daily", norma]}}, doses: "$doses", dailyPortions: "$dailyPortions" } },
    ];
    const result = await Water.aggregate(query);
-   // console.log(result)
-   // res.json({date, dailyPortions: result});
-   res.json(...result);
+   if (result.length) {
+      res.json(...result)
+   } else {
+      res.json({ date, percentage: 0, doses: 0, dailyPortions: []})
+   }
 }
-// db.books.aggregate([
-//    // First Stage
-//    {     $group : { _id : "$author", books: { $push: "$$ROOT" } }   },
-//    // Second Stage
-//    {     $addFields: { totalCopies : { $sum: "$books.copies" } } }
-//  ])
 
 const getMonth = async (req, res)=>{
    const {_id: user} = req.user;
@@ -128,62 +117,3 @@ export default {
    generatePeriod: controlWrapper(generatePeriod),
    deleteAll: controlWrapper(deleteAll),
 }
-
-
-// const getById = async (req, res, next) => {
-//    const {_id: owner} = req.user;
-//    const {id} = req.params;
-//    const result = await Contact.findOne({_id: id, owner}, "-createdAt -updatedAt").populate("owner", "username email");
-//    if (!result){
-//       next(new HttpError(404, `Contact with id=${req.params.id} not found`));
-//    } else{
-//    res.json(result);
-//    }
-// }
-
-
-
-// const updateFavoriteById = async (req, res, next)=>{
-//    const result = await Contact.findByIdAndUpdate(req.params.id, req.body);
-//    if (!result){
-//       next(new HttpError(404, `Contacts with id=${req.params.id} not found`));
-//    } else{
-//    res.json(result);
-//    };
-// }
-
-// const deleteAll = async (req, res, next)=>{
-//    const result = await Contact.deleteMany();
-//    if (!result){
-//       next(new HttpError(404, "X3 what wrong"))
-//    }
-//    res.json(result)
-// }
-
-// db.players.aggregate( [
-//    { $addFields:
-//       {
-//         isFound:
-//             { $function:
-//                {
-//                   body: function(name) {
-//                      return hex_md5(name) == "15b0a220baa16331e8d80e15367677ad"
-//                   },
-//                   args: [ "$name" ],
-//                   lang: "js"
-//                }
-//             },
-//          message:
-//             { $function:
-//                {
-//                   body: function(name, scores) {
-//                      let total = Array.sum(scores);
-//                      return `Hello ${name}.  Your total score is ${total}.`
-//                   },
-//                   args: [ "$name", "$scores"],
-//                   lang: "js"
-//                }
-//             }
-//        }
-//     }
-// ] )
