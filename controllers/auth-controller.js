@@ -54,8 +54,10 @@ const signout = async (req, res, next) => {
 };
 
 const refresh = async (req, res, next) => {
-   const { username, email } = req.user;
-   res.json({ username, email });
+   // const { username, email } = req.user;
+   // console.log('user== ', req.user);
+   // res.json({ username, email });
+   res.json({ email: req.user.email, date: req.user.date, waterNorma: req.user.waterNorma, token: req.user.token, username: req.user.username, avatarURL: req.user.avatarURL, gender: req.user.gender });
 };
 
 export default {
