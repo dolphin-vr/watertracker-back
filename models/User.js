@@ -3,7 +3,6 @@ import { Schema, model } from "mongoose";
 import { handleSaveError, preUpdate } from "./hooks.js";
 
 const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
-// const subscriptionType = ["starter", "pro", "business"];
 const genderList = ["woman", "man"];
 
 const userSchema = new Schema(
@@ -100,7 +99,7 @@ export const UpdateUserInfoSchema = Joi.object({
 });
 
 export const UpdateWaterNormaSchema = Joi.object({
-  waterNorma: Joi.number().required().messages({
+  waterNorma: Joi.number().min(1).max(15000).required().messages({
     "any.required": "missing required {#label} field",
     "number.base": "{#label} must be number",
   }),

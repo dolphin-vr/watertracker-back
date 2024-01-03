@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 import app from './app.js'
-import { todayISO } from './helpers/dates.js';
 
 const {DB_HOST, PORT=3000} = process.env;
 

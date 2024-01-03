@@ -18,13 +18,13 @@ const getUserInfo = (req, res) => {
   });
 };
 
-const userAvatar = controlWrapper(async (req, res) => {
+const userAvatar = async (req, res) => {
   const { _id } = req.user;
   const { path } = req.file;
 
   await Jimp.read(path)
     .then((img) => {
-      return img.resize(100, 100).quality(75).write(path);
+      return img.resize(128, 128).quality(75).write(path);
     })
     .catch((error) => {
       throw HttpError(404, error.message);
@@ -42,9 +42,9 @@ const userAvatar = controlWrapper(async (req, res) => {
     avatarURL: user.avatarURL,
     //  message: "Avatar added successfully",
   });
-});
+};
 
-const updateUserInfo = controlWrapper(async (req, res) => {
+const updateUserInfo = async (req, res) => {
   const { _id } = req.user;
   const { newPassword } = req.body;
   const user = await User.findByIdAndUpdate(_id, {
@@ -60,20 +60,20 @@ const updateUserInfo = controlWrapper(async (req, res) => {
     gender: user.gender,
     //  message: "User info is updated",
   });
-});
+};
 
-const updateWaterNorma = controlWrapper(async (req, res) => {
+const updateWaterNorma = async (req, res) => {
   const { _id } = req.user;
   const { waterNorma } = req.body;
   const user = await User.findByIdAndUpdate(_id, { waterNorma });
   res.status(200).json({
     waterNorma: user.waterNorma,
   });
-});
+};
 
 export default {
-  getUserInfo,
-  userAvatar,
-  updateUserInfo,
-  updateWaterNorma,
+  getUserInfo: controlWrapper(getUserInfo),
+  userAvatar: controlWrapper(userAvatar),
+  updateUserInfo: controlWrapper(updateUserInfo),
+  updateWaterNorma: controlWrapper(updateWaterNorma),
 };

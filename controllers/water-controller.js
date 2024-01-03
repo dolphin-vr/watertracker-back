@@ -5,7 +5,7 @@ import User from '../models/User.js';
 
 const addDoze = async (req, res, next)=>{
    const result = await Water.create({...req.body, user: req.user._id});
-   res.status(201).json({_id: result._id, date: result.date, time: result.time, water: result.water});
+   res.status(201).json({id: result._id, time: result.time, water: result.water});
 }
 
 const editDoze = async (req, res, next)=>{
@@ -15,7 +15,7 @@ const editDoze = async (req, res, next)=>{
       if (!result){
          next(new HttpError(404, `Drink with id=${req.params.id} not found`));
       } else{
-      res.json({_id: result._id, date: result.date, time: result.time, water: result.water});
+      res.json({id: result._id, time: result.time, water: result.water});
       };
 }
 
@@ -26,7 +26,7 @@ const deleteDoze = async (req, res, next)=>{
       if (!result){
          next(new HttpError(404, `Drink with id=${req.params.id} not found`));
       } else{
-      res.json({message: "Delete success"});
+      res.json({id: result._id});
       };
 }
 
@@ -67,22 +67,6 @@ const getMonth = async (req, res)=>{
    res.json({month: result, waterNorma: req.user.waterNorma});
 }
 
-const generateMonth = async (req, res, next)=>{
-   const mm = req.body.month;
-   const firstDay = req.body.firstday;
-   const lastDay = req.body.lastday;
-   for (let day = firstDay; day <= lastDay; day++) {
-      const dozen = Math.round(Math.random() * 17 + 1);
-      const date = `2023-${mm.toString().padStart(2, 0)}-${day.toString().padStart(2, 0)}`;
-      for (let doze = 1; doze < dozen; doze++) {
-         const time = `${Math.round(Math.random() * 16 + 5)}:${Math.trunc(Math.random() * 12) * 5}`;
-         const water = Math.trunc(Math.random() * 10 + 1) * 50;
-         const result = await Water.create({date, time, water, user: req.user._id});
-      }
-   }
-   res.status(201).json("Successfuly created");
-}
-
 const generatePeriod = async (req, res, next)=>{
    const firstDay = new Date(req.body.firstday);
    const lastDay = new Date(req.body.lastday);
@@ -113,7 +97,6 @@ export default {
    addDoze: controlWrapper(addDoze),
    editDoze: controlWrapper(editDoze),
    deleteDoze: controlWrapper(deleteDoze),
-   generateMonth: controlWrapper(generateMonth),
    generatePeriod: controlWrapper(generatePeriod),
    deleteAll: controlWrapper(deleteAll),
 }

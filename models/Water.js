@@ -2,17 +2,25 @@ import { Schema, model } from "mongoose";
 import Joi from "joi";
 import { handleSaveError, preUpdate } from "./hooks.js";
 
+const dateRegexp = /(\d{4})-(\d{2})-(\d{2})/;
+const timeRegexp = /(\d{4}):(\d{2})/;
 const waterSchema = new Schema(
    {
       date: {
          type: String,
+         match: dateRegexp,
          required: [true, "Set date of record"],
       },
       time: {
          type: String,
+         match: timeRegexp,
          required: [true, "Set time of record"],
       },
-      water: { type: Number, required: [true, "Set volume of water"], min: 10, max: 5000 },
+      water: {
+         type: Number,
+         required: [true, "Set volume of water"],
+         min: 10, max: 5000
+      },
       user: {
          type: Schema.Types.ObjectId,
          ref: "user",
@@ -20,22 +28,20 @@ const waterSchema = new Schema(
       },
    },
    { versionKey: false, timestamps: true }
-); // , { collection: 'water' }
+);
 
 waterSchema.post("save", handleSaveError);
-
 waterSchema.pre("findOneAndUpdate", preUpdate);
-
 waterSchema.post("findOneAndUpdate", handleSaveError);
 
 const Water = model("water", waterSchema, "water");
 
 export const waterAddSchema = Joi.object({
-    date: Joi.string().required().messages({
+    date: Joi.string().pattern(dateRegexp).required().messages({
       "any.required": "missing required 'date' field",
       "string.base": "'date' must be date-string",
    }),
-   time: Joi.string().required().messages({
+   time: Joi.string().pattern(timeRegexp).required().messages({
     "any.required": "missing required 'time' field",
     "string.base": "'time' must be time-string",
   }),
@@ -46,10 +52,10 @@ export const waterAddSchema = Joi.object({
 });
 
 export const waterUpdateSchema = Joi.object({
-   date: Joi.string().messages({
+   date: Joi.string().pattern(dateRegexp).messages({
      "string.base": "'date' must be date-string",
   }),
-  time: Joi.string().required().messages({
+  time: Joi.string().pattern(timeRegexp).required().messages({
    "any.required": "missing required 'time' field",
    "string.base": "'time' must be time-string",
  }),
