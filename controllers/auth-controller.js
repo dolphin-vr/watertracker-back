@@ -4,7 +4,7 @@ import { controlWrapper } from "../decorators/index.js";
 import User from "../models/User.js";
 import { HttpError } from "../helpers/HttpError.js";
 
-const { JWT_SECRET, BASE_URL } = process.env;
+const { JWT_SECRET } = process.env;
 
 const makeToken = async (payload) => {
    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "720h" });
