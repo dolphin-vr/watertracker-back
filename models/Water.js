@@ -19,7 +19,7 @@ const waterSchema = new Schema(
       water: {
          type: Number,
          required: [true, "Set volume of water"],
-         min: 10, max: 5000
+         min: 1, max: 5000
       },
       user: {
          type: Schema.Types.ObjectId,
