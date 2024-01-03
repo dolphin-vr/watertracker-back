@@ -52,6 +52,10 @@ export const waterAddSchema = Joi.object({
 });
 
 export const waterUpdateSchema = Joi.object({
+   date: Joi.string().pattern(dateRegexp).required().messages({
+     "any.required": "missing required 'date' field",
+     "string.base": "'date' must be date-string",
+  }),
   time: Joi.string().pattern(timeRegexp).required().messages({
    "any.required": "missing required 'time' field",
    "string.base": "'time' must be time-string",
