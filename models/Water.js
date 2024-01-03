@@ -3,7 +3,7 @@ import Joi from "joi";
 import { handleSaveError, preUpdate } from "./hooks.js";
 
 const dateRegexp = /(\d{4})-(\d{2})-(\d{2})/;
-const timeRegexp = /(\d{4}):(\d{2})/;
+const timeRegexp = /(\d{2}):(\d{2})/;
 const waterSchema = new Schema(
    {
       date: {
@@ -52,9 +52,6 @@ export const waterAddSchema = Joi.object({
 });
 
 export const waterUpdateSchema = Joi.object({
-   date: Joi.string().pattern(dateRegexp).messages({
-     "string.base": "'date' must be date-string",
-  }),
   time: Joi.string().pattern(timeRegexp).required().messages({
    "any.required": "missing required 'time' field",
    "string.base": "'time' must be time-string",
