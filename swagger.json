@@ -167,7 +167,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthenticationResponse"
+                  "$ref": "#/components/schemas/UserInfoResponse"
                 }
               }
             }
@@ -182,10 +182,154 @@
           }
         }
       },
-      "patch": {}
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user's information",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Update's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserInfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
     },
-    "/api/users/avatar": {},
-    "/api/users/waterrate": {}
+    "/api/users/avatar": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user's avatar",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Avatar image",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "avatarURL": {
+                      "type": "string",
+                      "description": "Avatar URL",
+                      "example": "http://cloudy.com/avatar/petro.png"
+                    },
+                    "example": {
+                      "avatarURL": "http://cloudy.com/avatar/petro.png"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/waterrate": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user's water norma",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Water norma",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "waterNorma": {
+                    "type": "string",
+                    "description": "User water norma",
+                    "example": "2000"
+                  }
+                },
+                "example": {
+                  "waterNorma": "2000"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "waterNorma": {
+                      "type": "string",
+                      "description": "User water norma",
+                      "example": "2000"
+                    }
+                  },
+                  "example": {
+                    "waterNorma": "2000"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    }
   },
   "components": {
     "schemas": {
@@ -294,6 +438,87 @@
           "email": "testuser@ukr.net",
           "date": "2024-01-01",
           "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OTk1NzBkYmI4MzcyOWI3Mzc2NzJmMyIsImlhdCI6MTcwNDU0ODEwOSwiZXhwIjoxNzA3MTQwMTA5fQ.a_i9tiEkXQf5ioK96tJaDjBHolJWCebR97nj8nOvUM8",
+          "username": "User",
+          "waterNorma": "2000",
+          "avatarURL": "http://cloudy.com/avatar/petro.png",
+          "gender": "Man"
+        }
+      },
+      "UpdateUserInfoRequest": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "12345678"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "New user's password",
+            "example": "12345678"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "Man"
+          }
+        },
+        "example": {
+          "email": "testuser@ukr.net",
+          "username": "User",
+          "gender": "Man",
+          "password": "12345678",
+          "newPassword": "87654321"
+        }
+      },
+      "UserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "date": {
+            "type": "string",
+            "description": "Registration date",
+            "example": "2024-01-01"
+          },
+          "waterNorma": {
+            "type": "string",
+            "description": "User water norma",
+            "example": "2000"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Avatar URL",
+            "example": "http://cloudy.com/avatar/petro.png"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "Man"
+          }
+        },
+        "example": {
+          "email": "testuser@ukr.net",
+          "date": "2024-01-01",
           "username": "User",
           "waterNorma": "2000",
           "avatarURL": "http://cloudy.com/avatar/petro.png",

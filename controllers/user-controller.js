@@ -57,6 +57,9 @@ const updateUserInfo = async (req, res) => {
     email: user.email,
     username: user.username,
     gender: user.gender,
+    avatarURL: user.avatarURL,
+    waterNorma: user.waterNorma,
+    date: user.date,
   });
 };
 
