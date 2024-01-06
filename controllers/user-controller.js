@@ -27,7 +27,7 @@ const userAvatar = async (req, res) => {
       return img.resize(128, 128).quality(75).write(path);
     })
     .catch((error) => {
-      throw HttpError(404, error.message);
+      throw new HttpError(404, error.message);
     });
 
   const { url: avatarURL } = await cloudinary.uploader.upload(path, {
