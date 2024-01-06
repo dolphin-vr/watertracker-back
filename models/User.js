@@ -84,16 +84,16 @@ export const VerifySchema = Joi.object({
 
 export const UpdateUserInfoSchema = Joi.object({
   username: Joi.string().min(3).messages({
-    "string.base": "'username' must be string",
+    "string.base": "{#label} must be string",
   }),
   email: Joi.string().pattern(emailRegexp).messages({
-    "string.pattern.base": "'email' must be valid e-mail",
+    "string.pattern.base": "{#label} must be valid e-mail",
   }),
   password: Joi.string().min(8).max(48).messages({
-    "string.base": "'password' must be string",
+    "string.base": "{#label} must be string",
   }),
   newPassword: Joi.string().min(8).max(48).messages({
-    "string.base": "'password' must be string",
+    "string.base": "{#label} must be string",
   }),
   gender: Joi.string().valid(...genderList),
 });
