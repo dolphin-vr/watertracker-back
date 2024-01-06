@@ -155,7 +155,37 @@
           }
         }
       }
-    }
+    },
+    "/api/users/info": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "User's information",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      },
+      "patch": {}
+    },
+    "/api/users/avatar": {},
+    "/api/users/waterrate": {}
   },
   "components": {
     "schemas": {

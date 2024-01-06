@@ -40,7 +40,6 @@ const userAvatar = async (req, res) => {
 
   res.status(200).json({
     avatarURL: user.avatarURL,
-    //  message: "Avatar added successfully",
   });
 };
 
@@ -58,7 +57,6 @@ const updateUserInfo = async (req, res) => {
     email: user.email,
     username: user.username,
     gender: user.gender,
-    //  message: "User info is updated",
   });
 };
 
