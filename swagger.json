@@ -1,0 +1,850 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Watertracker API",
+    "description": "API documentation for project Watertracker"
+  },
+  "consumes": ["application/json", "multipart/form-data"],
+  "produces": ["application/json"],
+  "servers": [{ "url": "https://watertracker.onrender.com" }],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "User information endpoints"
+    },
+    {
+      "name": "Water",
+      "description": "Water information endpoints"
+    }
+  ],
+  "paths": {
+    "/api/auth/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User registration",
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Such e-mail already exist",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/auth/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User authentication",
+        "requestBody": {
+          "description": "Authentication's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "E-mail or password invalid",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/auth/signout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User logaut",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": "string",
+                    "description": "Respons message ",
+                    "example": "Signout successful"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "User refresh",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/info": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "User's information",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user's information",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Update's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserInfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/avatar": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user's avatar",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Avatar image",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "avatarURL": {
+                      "type": "string",
+                      "description": "Avatar URL",
+                      "example": "http://cloudy.com/avatar/petro.png"
+                    },
+                    "example": {
+                      "avatarURL": "http://cloudy.com/avatar/petro.png"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/waterrate": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user's water norma",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Water norma",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "waterNorma": {
+                    "type": "number",
+                    "description": "User water norma",
+                    "example": 2000
+                  }
+                },
+                "example": {
+                  "waterNorma": 2000
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "waterNorma": {
+                      "type": "number",
+                      "description": "User water norma",
+                      "example": 2000
+                    }
+                  },
+                  "example": {
+                    "waterNorma": 2000
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/water/": {
+      "post": {
+        "tags": ["Water"],
+        "summary": "Add water dose ",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Dose's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWaterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/water/{id}": {
+      "put": {
+        "tags": ["Water"],
+        "summary": "Update water dose ",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "Dose's id"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Dose's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWaterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Water"],
+        "summary": "Delete water dose ",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "Dose's id"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/water/today/{date}": {
+      "get": {
+        "tags": ["Water"],
+        "summary": "List of doses per day ",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "date",
+            "required": true,
+            "type": "string",
+            "description": "Date's today"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/water/month/{date}": {
+      "get": {
+        "tags": ["Water"],
+        "summary": "Information per month",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "date",
+            "required": true,
+            "type": "string",
+            "description": "Date's today"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthWaterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": " Not authorized",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["email", "password", "date"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "12345678"
+          },
+          "date": {
+            "type": "string",
+            "description": "Registration date",
+            "example": "2024-01-01"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "date": {
+            "type": "string",
+            "description": "Registration date",
+            "example": "2024-01-01"
+          },
+          "token": {
+            "type": "string",
+            "description": "Access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OTk1NzBkYmI4MzcyOWI3Mzc2NzJmMyIsImlhdCI6MTcwNDU0ODEwOSwiZXhwIjoxNzA3MTQwMTA5fQ.a_i9tiEkXQf5ioK96tJaDjBHolJWCebR97nj8nOvUM8"
+          }
+        },
+        "example": {
+          "email": "testuser@ukr.net",
+          "date": "2024-01-01",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OTk1NzBkYmI4MzcyOWI3Mzc2NzJmMyIsImlhdCI6MTcwNDU0ODEwOSwiZXhwIjoxNzA3MTQwMTA5fQ.a_i9tiEkXQf5ioK96tJaDjBHolJWCebR97nj8nOvUM8"
+        }
+      },
+      "AuthenticationRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "12345678"
+          }
+        }
+      },
+      "AuthenticationResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "date": {
+            "type": "string",
+            "description": "Registration date",
+            "example": "2024-01-01"
+          },
+          "token": {
+            "type": "string",
+            "description": "Access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OTk1NzBkYmI4MzcyOWI3Mzc2NzJmMyIsImlhdCI6MTcwNDU0ODEwOSwiZXhwIjoxNzA3MTQwMTA5fQ.a_i9tiEkXQf5ioK96tJaDjBHolJWCebR97nj8nOvUM8"
+          },
+          "waterNorma": {
+            "type": "string",
+            "description": "User water norma",
+            "example": "2000"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Avatar URL",
+            "example": "http://cloudy.com/avatar/petro.png"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "Man"
+          }
+        },
+        "example": {
+          "email": "testuser@ukr.net",
+          "date": "2024-01-01",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OTk1NzBkYmI4MzcyOWI3Mzc2NzJmMyIsImlhdCI6MTcwNDU0ODEwOSwiZXhwIjoxNzA3MTQwMTA5fQ.a_i9tiEkXQf5ioK96tJaDjBHolJWCebR97nj8nOvUM8",
+          "username": "User",
+          "waterNorma": "2000",
+          "avatarURL": "http://cloudy.com/avatar/petro.png",
+          "gender": "Man"
+        }
+      },
+      "UpdateUserInfoRequest": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "12345678"
+          },
+          "newPassword": {
+            "type": "number",
+            "description": "New user's password",
+            "example": "12345678"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "Man"
+          }
+        },
+        "example": {
+          "email": "testuser@ukr.net",
+          "username": "User",
+          "gender": "Man",
+          "password": "12345678",
+          "newPassword": "87654321"
+        }
+      },
+      "UserInfoResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "date": {
+            "type": "string",
+            "description": "Registration date",
+            "example": "2024-01-01"
+          },
+          "waterNorma": {
+            "type": "number",
+            "description": "User water norma",
+            "example": 2000
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Avatar URL",
+            "example": "http://cloudy.com/avatar/petro.png"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "Man"
+          }
+        },
+        "example": {
+          "email": "testuser@ukr.net",
+          "date": "2024-01-01",
+          "username": "User",
+          "waterNorma": 2000,
+          "avatarURL": "http://cloudy.com/avatar/petro.png",
+          "gender": "Man"
+        }
+      },
+      "AddWaterRequest": {
+        "type": "object",
+        "required": ["date", "time", "water"],
+        "properties": {
+          "time": {
+            "type": "string",
+            "description": "Time of dose addition",
+            "example": "00-00"
+          },
+          "water": {
+            "type": "number",
+            "description": "Dose size",
+            "example": 200
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of dose addition",
+            "example": "2024-01-01"
+          }
+        },
+        "example": {
+          "date": "2024-01-01",
+          "time": "00-00",
+          "water": 200
+        }
+      },
+      "WaterResponse": {
+        "type": "object",
+        "properties": {
+          "percentage": {
+            "type": "number",
+            "description": "Percentage of the daily norm",
+            "example": 31
+          },
+          "dailyPortions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Dose's id",
+                  "example": "6599488c493d943cc888a9a6"
+                },
+                "time": {
+                  "type": "string",
+                  "description": "Time of dose addition",
+                  "example": "00-00"
+                },
+                "water": {
+                  "type": "number",
+                  "description": "Dose size",
+                  "example": 200
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "dailyPortions": [
+            {
+              "id": "6599488c493d943cc888a9a6",
+              "time": "14:33",
+              "water": 450
+            },
+            {
+              "id": "65998fb1bb83729b737679bb",
+              "time": "19:36",
+              "water": 300
+            }
+          ],
+          "percentage": 31
+        }
+      },
+      "MonthWaterResponse": {
+        "type": "object",
+        "properties": {
+          "waterNorma": {
+            "type": "number",
+            "description": "User water norma",
+            "example": 2400
+          },
+          "month": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "description": "Registration date",
+                  "example": "2024-01-01"
+                },
+                "percentage": {
+                  "type": "number",
+                  "description": "Percentage of the daily norm",
+                  "example": 31
+                },
+                "doses": {
+                  "type": "number",
+                  "description": "Quantity of doses per day",
+                  "example": 3
+                }
+              }
+            }
+          }
+        },
+        "example": {
+          "month": [
+            {
+              "date": "2024-01-04",
+              "percentage": 46,
+              "doses": 3
+            },
+            {
+              "date": "2024-01-05",
+              "percentage": 8,
+              "doses": 1
+            }
+          ],
+          "waterNorma": 2400
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

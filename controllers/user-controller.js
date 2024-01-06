@@ -27,7 +27,7 @@ const userAvatar = async (req, res) => {
       return img.resize(128, 128).quality(75).write(path);
     })
     .catch((error) => {
-      throw HttpError(404, error.message);
+      throw new HttpError(404, error.message);
     });
 
   const { url: avatarURL } = await cloudinary.uploader.upload(path, {
@@ -40,7 +40,6 @@ const userAvatar = async (req, res) => {
 
   res.status(200).json({
     avatarURL: user.avatarURL,
-    //  message: "Avatar added successfully",
   });
 };
 
@@ -58,7 +57,9 @@ const updateUserInfo = async (req, res) => {
     email: user.email,
     username: user.username,
     gender: user.gender,
-    //  message: "User info is updated",
+    avatarURL: user.avatarURL,
+    waterNorma: user.waterNorma,
+    date: user.date,
   });
 };
 
