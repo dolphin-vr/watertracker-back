@@ -3,10 +3,8 @@ import Water from '../models/Water.js';
 import { HttpError } from "../helpers/HttpError.js";
 import User from '../models/User.js';
 
-const dailyDrinks = async (user, date) => {   
-   // const {_id: user} = req.user;
-   const norma = user.waterNorma / 100 || 1;
-   // const date = req.params.date;
+const dailyDrinks = async (user, date) => {  
+   const norma = user.waterNorma;
    const query = [
       { $match: {user: user._id, "date": date} },
       { $sort: {time: 1} },
@@ -15,74 +13,50 @@ const dailyDrinks = async (user, date) => {
          dailyPortions: {$push: {id: "$_id", time: "$time", water: "$water"}}, 
          daily: {$sum: "$water"}}
       },
-      { $replaceWith: { date: "$_id", percentage: { $round : { $divide: [ "$daily", norma]}}, dailyPortions: "$dailyPortions" } },
+      { $replaceWith: { dailyPortions: "$dailyPortions", 
+            percentage: {$switch:
+               {branches: [{case: {$eq: [norma, 0]}, then: -1}],
+               default: { $round : { $divide: [{$multiply: [ "$daily", 100]}, norma]}}}
+            }
+      }},
    ];
    const result = await Water.aggregate(query);
    if (result.length) {
       return result[0]
    } else {
-      return { date, percentage: 0, dailyPortions: []}
+      return { percentage: 0, dailyPortions: []}
    }
 }
 
 const addDoze = async (req, res, next)=>{
-   // const result = 
    await Water.create({...req.body, user: req.user._id});
    const today = await dailyDrinks(req.user, req.body.date);
    res.status(201).json(today);
-   // res.status(201).json({id: result._id, time: result.time, water: result.water});
 }
 
 const editDoze = async (req, res, next)=>{
-   // const {_id: user} = req.user;
-   // const {id} = req.params;
    const result = await Water.findOneAndUpdate({_id: req.params.id, user: req.user._id}, req.body);
       if (!result){
          next(new HttpError(404, `Drink with id=${req.params.id} not found`));
       } else{
          const today = await dailyDrinks(req.user, req.body.date);
          res.json(today);
-      // res.json({id: result._id, time: result.time, water: result.water});
       };
 }
 
 const deleteDoze = async (req, res, next)=>{
-   // const {_id: user} = req.user;
-   // const {id} = req.params;
    const result = await Water.findOneAndDelete({_id: req.params.id, user: req.user._id});
       if (!result){
          next(new HttpError(404, `Drink with id=${req.params.id} not found`));
       } else{
-         // const date = result.date;
          const today = await dailyDrinks(req.user, result.date);
          res.json(today);
-      // res.json({id: result._id});
       };
 }
 
 const getDaily = async (req, res)=>{
    const today = await dailyDrinks(req.user, req.params.date);
    res.json(today);
-   // const {_id: user} = req.user;
-   // const norma = req.user.waterNorma / 100 || 1;
-   // const date = req.params.date;
-   // const query = [
-   //    { $match: {user, "date": date} },
-   //    { $sort: {time: 1} },
-   //    { $group: {
-   //       _id: "$date", 
-   //       dailyPortions: {$push: {id: "$_id", time: "$time", water: "$water"}}, 
-   //       daily: {$sum: "$water"}, 
-   //       doses: {$count: {}}}
-   //    },
-   //    { $replaceWith: { date: "$_id", percentage: { $round : { $divide: [ "$daily", norma]}}, doses: "$doses", dailyPortions: "$dailyPortions" } },
-   // ];
-   // const result = await Water.aggregate(query);
-   // if (result.length) {
-   //    res.json(...result)
-   // } else {
-   //    res.json({ date, percentage: 0, doses: 0, dailyPortions: []})
-   // }
 }
 
 const getMonth = async (req, res)=>{
