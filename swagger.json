@@ -371,7 +371,7 @@
     "/api/water/{id}": {
       "put": {
         "tags": ["Water"],
-        "summary": "AUpdate water dose ",
+        "summary": "Update water dose ",
         "parameters": [
           {
             "in": "path",
