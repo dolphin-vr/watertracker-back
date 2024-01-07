@@ -32,7 +32,7 @@ const signin = async (req, res, next) => {
    }
    const isPasswdOK = await bcrypt.compare(password, user.password);
    if (!isPasswdOK) {
-      return next(new HttpError(401, "E-mail or password invalid"))
+      return next(new HttpError(401, "E-mail or password invalid"));
    }
    const token = await makeToken({id: user.id})
    res.json({ email: user.email, date: user.date, waterNorma: user.waterNorma, token: token, username: user.username, avatarURL: user.avatarURL, gender: user.gender });

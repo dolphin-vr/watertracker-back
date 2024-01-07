@@ -45,21 +45,32 @@ const userAvatar = async (req, res) => {
 
 const updateUserInfo = async (req, res) => {
   const { _id } = req.user;
-  const { newPassword } = req.body;
-  const user = await User.findByIdAndUpdate(_id, {
-    ...req.body,
-  });
-  if (newPassword) {
+  const { password, newPassword } = req.body;
+  let updateUser = {};
+  if (password) {
+    const user = await User.findById(_id);
+    const isPasswdOK = await bcrypt.compare(password, user.password);
+    if (!isPasswdOK) {
+      throw new HttpError(401, "Password is invalid");
+    }
     const hashPasswd = await bcrypt.hash(newPassword, 10);
-    user.password = hashPasswd;
+    updateUser = await User.findByIdAndUpdate(_id, {
+      ...req.body,
+      password: hashPasswd,
+    });
+  } else {
+    updateUser = await User.findByIdAndUpdate(_id, {
+      ...req.body,
+    });
   }
+
   res.status(200).json({
-    email: user.email,
-    username: user.username,
-    gender: user.gender,
-    avatarURL: user.avatarURL,
-    waterNorma: user.waterNorma,
-    date: user.date,
+    email: updateUser.email,
+    username: updateUser.username,
+    gender: updateUser.gender,
+    avatarURL: updateUser.avatarURL,
+    waterNorma: updateUser.waterNorma,
+    date: updateUser.date,
   });
 };
 
