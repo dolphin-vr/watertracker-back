@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "1.0.0",
+    "version": "1.0.2",
     "title": "Watertracker API",
     "description": "API documentation for project Watertracker"
   },
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json"],
-  "servers": [{ "url": "https://watertracker.onrender.com" }],
+  "servers": [{ "url": "https://watertracker-back.onrender.com/api" }],
   "tags": [
     {
       "name": "Auth",
@@ -23,7 +23,7 @@
     }
   ],
   "paths": {
-    "/api/auth/signup": {
+    "/auth/signup": {
       "post": {
         "tags": ["Auth"],
         "summary": "User registration",
@@ -60,7 +60,7 @@
         }
       }
     },
-    "/api/auth/signin": {
+    "/auth/signin": {
       "post": {
         "tags": ["Auth"],
         "summary": "User authentication",
@@ -97,7 +97,7 @@
         }
       }
     },
-    "/api/auth/signout": {
+    "/auth/signout": {
       "post": {
         "tags": ["Auth"],
         "summary": "User logaut",
@@ -129,7 +129,7 @@
         }
       }
     },
-    "/api/auth/refresh": {
+    "/auth/refresh": {
       "get": {
         "tags": ["Auth"],
         "summary": "User refresh",
@@ -156,7 +156,7 @@
         }
       }
     },
-    "/api/users/info": {
+    "/users/info": {
       "get": {
         "tags": ["Users"],
         "summary": "User's information",
@@ -219,7 +219,7 @@
         }
       }
     },
-    "/api/users/avatar": {
+    "/users/avatar": {
       "patch": {
         "tags": ["Users"],
         "summary": "Update user's avatar",
@@ -272,7 +272,7 @@
         }
       }
     },
-    "/api/users/waterrate": {
+    "/users/waterrate": {
       "patch": {
         "tags": ["Users"],
         "summary": "Update user's water norma",
@@ -330,7 +330,7 @@
         }
       }
     },
-    "/api/water/": {
+    "/water/": {
       "post": {
         "tags": ["Water"],
         "summary": "Add water dose ",
@@ -368,7 +368,7 @@
         }
       }
     },
-    "/api/water/{id}": {
+    "/water/{id}": {
       "put": {
         "tags": ["Water"],
         "summary": "Update water dose ",
@@ -449,7 +449,7 @@
         }
       }
     },
-    "/api/water/today/{date}": {
+    "/water/today/{date}": {
       "get": {
         "tags": ["Water"],
         "summary": "List of doses per day ",
@@ -485,7 +485,7 @@
         }
       }
     },
-    "/api/water/month/{date}": {
+    "/water/month/{date}": {
       "get": {
         "tags": ["Water"],
         "summary": "Information per month",
