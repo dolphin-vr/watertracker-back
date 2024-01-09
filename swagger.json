@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "1.0.2",
+    "version": "1.0.3",
     "title": "Watertracker API",
     "description": "API documentation for project Watertracker"
   },
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json"],
-  "servers": [{ "url": "https://watertracker-back.onrender.com/api" }],
+  "servers": [{ "url": "https://watertracker.onrender.com/api" }],
   "tags": [
     {
       "name": "Auth",
@@ -113,7 +113,8 @@
                     "type": "string",
                     "description": "Respons message ",
                     "example": "Signout successful"
-                  }
+                  },
+                  "example": { "message": "Signout successful" }
                 }
               }
             }
@@ -230,10 +231,13 @@
           "content": {
             "multipart/form-data": {
               "schema": {
+                "required": ["avatar"],
+                "type": "object",
                 "properties": {
-                  "file": {
-                    "type": "array",
-                    "items": { "type": "string", "format": "binary" }
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "User's avatar image"
                   }
                 }
               }
@@ -252,10 +256,10 @@
                       "type": "string",
                       "description": "Avatar URL",
                       "example": "http://cloudy.com/avatar/petro.png"
-                    },
-                    "example": {
-                      "avatarURL": "http://cloudy.com/avatar/petro.png"
                     }
+                  },
+                  "example": {
+                    "avatarURL": "http://cloudy.com/avatar/petro.png"
                   }
                 }
               }
@@ -459,7 +463,8 @@
             "name": "date",
             "required": true,
             "type": "string",
-            "description": "Date's today"
+            "description": "Date's today",
+            "example": "2024-01-01"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -495,7 +500,8 @@
             "name": "date",
             "required": true,
             "type": "string",
-            "description": "Date's today"
+            "description": "Date's today",
+            "example": "2024-01-01"
           }
         ],
         "security": [{ "Bearer": [] }],
@@ -622,7 +628,7 @@
           "gender": {
             "type": "string",
             "description": "User's gender",
-            "example": "Man"
+            "example": "man"
           }
         },
         "example": {
@@ -632,7 +638,7 @@
           "username": "User",
           "waterNorma": "2000",
           "avatarURL": "http://cloudy.com/avatar/petro.png",
-          "gender": "Man"
+          "gender": "man"
         }
       },
       "UpdateUserInfoRequest": {
@@ -662,13 +668,13 @@
           "gender": {
             "type": "string",
             "description": "User's gender",
-            "example": "Man"
+            "example": "man"
           }
         },
         "example": {
           "email": "testuser@ukr.net",
           "username": "User",
-          "gender": "Man",
+          "gender": "man",
           "password": "12345678",
           "newPassword": "87654321"
         }
@@ -704,7 +710,7 @@
           "gender": {
             "type": "string",
             "description": "User's gender",
-            "example": "Man"
+            "example": "man"
           }
         },
         "example": {
@@ -713,7 +719,7 @@
           "username": "User",
           "waterNorma": 2000,
           "avatarURL": "http://cloudy.com/avatar/petro.png",
-          "gender": "Man"
+          "gender": "man"
         }
       },
       "AddWaterRequest": {
@@ -723,7 +729,7 @@
           "time": {
             "type": "string",
             "description": "Time of dose addition",
-            "example": "00-00"
+            "example": "00:00"
           },
           "water": {
             "type": "number",
@@ -738,7 +744,7 @@
         },
         "example": {
           "date": "2024-01-01",
-          "time": "00-00",
+          "time": "00:00",
           "water": 200
         }
       },
@@ -763,7 +769,7 @@
                 "time": {
                   "type": "string",
                   "description": "Time of dose addition",
-                  "example": "00-00"
+                  "example": "00:00"
                 },
                 "water": {
                   "type": "number",
