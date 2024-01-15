@@ -75,6 +75,13 @@ export const SignInSchema = Joi.object({
   }),
 });
 
+export const RemindSchema = Joi.object({
+  email: Joi.string().required().pattern(emailRegexp).messages({
+    "any.required": "missing required field 'email'",
+    "string.pattern.base": "'email' must be valid e-mail",
+  }),
+});
+
 export const VerifySchema = Joi.object({
   email: Joi.string().required().pattern(emailRegexp).messages({
     "any.required": "missing required field 'email'",
