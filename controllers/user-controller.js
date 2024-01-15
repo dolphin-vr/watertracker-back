@@ -10,9 +10,9 @@ const getUserInfo = (req, res) => {
   const { username, email, gender, avatarURL, waterNorma, date } = req.user;
   res.json({
     email,
-    username,
-    gender,
-    avatarURL,
+    username: username || "",
+    gender: gender || "",
+    avatarURL: avatarURL || "",
     waterNorma,
     date,
   });
@@ -66,9 +66,9 @@ const updateUserInfo = async (req, res) => {
 
   res.status(200).json({
     email: updateUser.email,
-    username: updateUser.username,
-    gender: updateUser.gender,
-    avatarURL: updateUser.avatarURL,
+    username: updateUser.username || "",
+    gender: updateUser.gender || "",
+    avatarURL: updateUser.avatarURL || "",
     waterNorma: updateUser.waterNorma,
     date: updateUser.date,
   });
